@@ -20,10 +20,12 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener,
+    ConversionDialogFragment.OnButtonClickListener {
 
     private var pathImagePicked: String? = null
     private lateinit var converterDisposable: Disposable
+    private lateinit var conversionDialogFragment: ConversionDialogFragment
 
     companion object {
         const val REQUEST_CODE_GET_CONTENT = 123
@@ -128,15 +130,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun convertJpgToPng(imagePicked: Bitmap, pathImagePicked: String) {
+        conversionDialogFragment = ConversionDialogFragment(this)
+        conversionDialogFragment.show(supportFragmentManager, "conversionDialogTag")
+
         converterDisposable = ImageConverter.convertJpgToPng(imagePicked, pathImagePicked)
+            .cache()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Toast.makeText(this, "${it.first} converted to png.", Toast.LENGTH_LONG).show()
                 textPathImageConverted.text = it.first
                 imageConverted.setImageBitmap(it.second)
+                conversionDialogFragment.dismiss()
             }, {
                 Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                conversionDialogFragment.dismiss()
             })
     }
+
+    override fun onPositiveClick() {
+        converterDisposable.dispose()
+        conversionDialogFragment.dismiss()
+    }
+
 }
