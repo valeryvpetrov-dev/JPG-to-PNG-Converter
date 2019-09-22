@@ -4,20 +4,26 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var pathImagePicked: String? = null
+    private lateinit var converterDisposable: Disposable
 
     companion object {
         const val REQUEST_CODE_GET_CONTENT = 123
@@ -31,6 +37,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         buttonConvert.setOnClickListener(this)
 
         requestPermissionWrite()
+    }
+
+    override fun onDestroy() {
+        converterDisposable.dispose()
+        super.onDestroy()
     }
 
     override fun onClick(v: View?) {
@@ -114,5 +125,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             cursor.close();
         }
         return res
+    }
+
+    private fun convertJpgToPng(imagePicked: Bitmap, pathImagePicked: String) {
+        converterDisposable = ImageConverter.convertJpgToPng(imagePicked, pathImagePicked)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Toast.makeText(this, "${it.first} converted to png.", Toast.LENGTH_LONG).show()
+                textPathImageConverted.text = it.first
+                imageConverted.setImageBitmap(it.second)
+            }, {
+                Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+            })
     }
 }
