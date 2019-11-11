@@ -10,21 +10,16 @@ object ImageConverter {
 
     fun convertJpgToPng(bitmap: Bitmap, pathToBitmap: String): Single<Pair<String, Bitmap>> {
         val (pathImagePickedDir, nameImagePicked) = splitPathToBitmap(pathToBitmap)
-        return Single.create(SingleOnSubscribe<Pair<String, Bitmap>> {
-            Thread.sleep(3000)
-            if (it.isDisposed) return@SingleOnSubscribe
-
+        return Single.fromCallable {
             val pathImageOutput = "$pathImagePickedDir/$nameImagePicked.png"
             val imageOutputStream = FileOutputStream(pathImageOutput)
 
             if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageOutputStream)) {
-                if (it.isDisposed) return@SingleOnSubscribe
-                it.onSuccess(pathImageOutput to BitmapFactory.decodeFile(pathImageOutput))
+                return@fromCallable (pathImageOutput to BitmapFactory.decodeFile(pathImageOutput))
             } else {
-                if (it.isDisposed) return@SingleOnSubscribe
-                it.onError(Exception("Conversion problem"))
+                throw Exception("Conversion problem")
             }
-        })
+        }
     }
 
     private fun splitPathToBitmap(pathToBitmap: String): Pair<String, String> {

@@ -15,9 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener,
@@ -124,7 +126,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             columnIndex.let {
                 res = cursor.getString(columnIndex)
             }
-            cursor.close();
+            cursor.close()
         }
         return res
     }
