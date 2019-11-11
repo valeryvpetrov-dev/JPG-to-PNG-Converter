@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GeekBrains.Android.Level-3.iml" filepath="$PROJECT_DIR$/GeekBrains.Android.Level-3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JPG-to-PNG-Converter.iml" filepath="$PROJECT_DIR$/JPG-to-PNG-Converter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/JPG-to-PNG-Converter-app.iml" filepath="$PROJECT_DIR$/app/JPG-to-PNG-Converter-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
