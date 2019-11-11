@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 
-class ConversionDialogFragment(private val onButtonClickListener: OnButtonClickListener) :
+class ConversionDialogFragment(private val onButtonClickListener: OnButtonClickListener? = null) :
     DialogFragment() {
 
     interface OnButtonClickListener {
@@ -19,7 +19,7 @@ class ConversionDialogFragment(private val onButtonClickListener: OnButtonClickL
             val builder = AlertDialog.Builder(it)
             builder.setMessage("Conversion is in progress")
                 .setPositiveButton("Stop") { dialog, id ->
-                    onButtonClickListener.onPositiveClick()
+                    onButtonClickListener?.onPositiveClick()
                 }
             // Create the AlertDialog object and return it
             builder.create()
